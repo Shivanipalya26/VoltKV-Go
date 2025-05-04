@@ -77,22 +77,22 @@ func TestRespReadValue(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "Empty Array",
+			name:  "Empty Array",
 			input: []byte("*0\r\n"),
 			expected: Value{
-				Typ: "array",
+				Typ:   "array",
 				Array: []Value{},
 			},
 			wantErr: nil,
 		},
 		{
-			name: "Null Array",
-			input: []byte("*-1\r\n"),
+			name:     "Null Array",
+			input:    []byte("*-1\r\n"),
 			expected: Value{Typ: "null"},
-			wantErr: nil,
+			wantErr:  nil,
 		},
 		{
-			name: "Nested Array",
+			name:  "Nested Array",
 			input: []byte("*2\r\n*2\r\n:1\r\n:2\r\n*2\r\n+a\r\n-b\r\n"),
 			expected: Value{
 				Typ: "array",
@@ -115,7 +115,7 @@ func TestRespReadValue(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "Array with Null Bulk String",
+			name:  "Array with Null Bulk String",
 			input: []byte("*3\r\n$3\r\nfoo\r\n$-1\r\n$3\r\nbar\r\n"),
 			expected: Value{
 				Typ: "array",
@@ -128,7 +128,7 @@ func TestRespReadValue(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "Array with Mixed Types",
+			name:  "Array with Mixed Types",
 			input: []byte("*3\r\n+hello\r\n:42\r\n$6\r\ngolang\r\n"),
 			expected: Value{
 				Typ: "array",
@@ -141,28 +141,28 @@ func TestRespReadValue(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "Invalid Type",
-			input: []byte("?invalid\r\n"),
+			name:     "Invalid Type",
+			input:    []byte("?invalid\r\n"),
 			expected: Value{},
-			wantErr: ErrUnexpectedType,
+			wantErr:  ErrUnexpectedType,
 		},
 		{
-			name: "Malformed Type",
-			input: []byte(":notanumber\r\n"),
+			name:     "Malformed Type",
+			input:    []byte(":notanumber\r\n"),
 			expected: Value{},
-			wantErr: ErrInvalidSyntax,
+			wantErr:  ErrInvalidSyntax,
 		},
 		{
-			name: "Incomplete Array",
-			input: []byte("*2\r\n$5\r\nhello\r\n"),
+			name:     "Incomplete Array",
+			input:    []byte("*2\r\n$5\r\nhello\r\n"),
 			expected: Value{},
-			wantErr: io.EOF,
+			wantErr:  io.EOF,
 		},
 		{
-			name: "Missing CRLF in BULK String",
-			input: []byte("$5\r\nhello"),
+			name:     "Missing CRLF in BULK String",
+			input:    []byte("$5\r\nhello"),
 			expected: Value{},
-			wantErr: fmt.Errorf("unexpected RESP syntax: expected CRLF, got EOF"),
+			wantErr:  fmt.Errorf("unexpected RESP syntax: expected CRLF, got EOF"),
 		},
 		{
 			name: "Large Bulk String",
@@ -175,7 +175,7 @@ func TestRespReadValue(t *testing.T) {
 				return buf.Bytes()
 			}(),
 			expected: Value{
-				Typ: "bulk",
+				Typ:  "bulk",
 				Bulk: string(bytes.Repeat([]byte("a"), 10000)),
 			},
 			wantErr: nil,
@@ -192,13 +192,13 @@ func TestRespReadValue(t *testing.T) {
 				if err == nil {
 					t.Fatalf("expected error %q, got nil", tt.wantErr.Error())
 				}
-			
+
 				if !errors.Is(err, tt.wantErr) && err.Error() != tt.wantErr.Error() {
 					t.Fatalf("expected error %q, got %q", tt.wantErr.Error(), err.Error())
 				}
 				return
-			}	
-			
+			}
+
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}

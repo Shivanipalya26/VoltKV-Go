@@ -44,6 +44,7 @@ func (srv *Server) handleConnection(conn net.Conn) {
 
 	for {
 		value, err := respReader.ReadValue()
+		log.Println(value)
 		if err != nil {
 			fmt.Fprintf(conn, "-ERR %v\r\n", err)
 			return 
@@ -57,7 +58,9 @@ func (srv *Server) handleConnection(conn net.Conn) {
 		args := make([]string, 0, len(value.Array))
 		valid := true
 		for _, v := range value.Array {
-			if v.Typ == "bulk" || v.Typ == "string" {
+			if v.Typ == "bulk" {
+				args = append(args, v.Bulk)
+			} else if v.Typ == "string" {
 				args = append(args, v.Str)
 			} else {
 				fmt.Fprintf(conn, "-ERR unsupported argument type\r\n")

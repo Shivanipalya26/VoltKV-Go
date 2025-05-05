@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Execute(args[]string, s *store.Store, conn net.Conn) {
+func Execute(args []string, s *store.Store, conn net.Conn) {
 	fmt.Printf("ARGS: %#v\n", args)
 
 	if len(args) == 0 || strings.TrimSpace(args[0]) == "" {
@@ -19,11 +19,11 @@ func Execute(args[]string, s *store.Store, conn net.Conn) {
 	cmd := strings.ToUpper(args[0])
 
 	switch cmd {
-	case "PING": 
+	case "PING":
 		handlePing(args, conn)
-	
+
 	case "SET":
-		handleSet(args, s, conn) 
+		handleSet(args, s, conn)
 
 	case "GET":
 		handleGet(args, s, conn)
@@ -52,11 +52,10 @@ func Execute(args[]string, s *store.Store, conn net.Conn) {
 	case "EXPIRE":
 		handleExpire(args, s, conn)
 
-	default: 
+	default:
 		fmt.Fprintf(conn, "-ERR unknown command '%s'\r\n", cmd)
 	}
 }
-
 
 func handlePing(args []string, conn net.Conn) {
 	if len(args) == 1 {
@@ -89,7 +88,7 @@ func handleGet(args []string, s *store.Store, conn net.Conn) {
 }
 
 func handleMSet(args []string, s *store.Store, conn net.Conn) {
-	if len(args) % 2 != 1 {
+	if len(args)%2 != 1 {
 		fmt.Fprint(conn, "-ERR: MSET requires even numbers of key-value pairs\r\n")
 		return
 	}
@@ -123,7 +122,7 @@ func handleHSet(args []string, s *store.Store, conn net.Conn) {
 	}
 	key := args[1]
 	fields := args[2:]
-	
+
 	fieldMap := make(map[string]string)
 	for i := 0; i < len(fields); i += 2 {
 		fieldMap[fields[i]] = fields[i+1]
@@ -131,7 +130,7 @@ func handleHSet(args []string, s *store.Store, conn net.Conn) {
 	s.HSet(key, fieldMap)
 	fmt.Fprint(conn, ":1\r\n")
 }
-	
+
 func handleHGet(args []string, s *store.Store, conn net.Conn) {
 	if len(args) != 3 {
 		fmt.Fprint(conn, "-ERR: HGET requires 3 arguments\r\n")

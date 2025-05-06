@@ -65,11 +65,13 @@ func (srv *Server) eventLoop() {
 			srv.mu.Lock()
 			srv.peers[p] = true
 			srv.mu.Unlock()
+			log.Printf("Added peer: %s", p.name)
 
 		case p := <-srv.removePeerChan:
 			srv.mu.Lock()
 			delete(srv.peers, p)
 			srv.mu.Unlock()
+			log.Printf("Removed peer: %s", p.name)
 
 		case cmd := <-srv.cmdChan:
 			srv.handleConnection(cmd)

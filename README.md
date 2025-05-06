@@ -1,7 +1,9 @@
 
-# GoCache
+# VoltKV-Go
 
-A simplified, educational  implementation of an in-memory key-value store, built in Go. It is designed to mimic some of the core features of [Redis](https://redis.io/) , focusing on understanding how key-value stores work and how data is serialized and communicated using the Redis Serialization Protocol (RESP). 
+VoltKV-Go is a lightweight, Redis-inspired in-memory key-value data store, implemented in Go.  It is designed to mimic some of the core features of [Redis](https://redis.io/), focusing on understanding how key-value stores work and how data is serialized and communicated using the Redis Serialization Protocol (RESP).
+
+The server accepts connections over TCP and processes incoming RESP-formatted messages, executing commands. It is designed to help understand the internals of systems like Redis by re-creating them from scratch in a modular and extensible manner.
 
 ---
 
@@ -19,8 +21,8 @@ A simplified, educational  implementation of an in-memory key-value store, built
 
 ### 1. **Clone the Repository**
 ```bash
-git clone https://github.com/Shivanipalya26/go-redis.git
-cd go-redis
+git clone https://github.com/Shivanipalya26/VoltKV-Go.git
+cd VoltKV-Go
 ```
 
 ### 2. **Install Go**

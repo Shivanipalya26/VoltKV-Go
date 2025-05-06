@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go_redis/server"
 	"go_redis/internals/store"
+	"go_redis/server"
 	"log"
 	"time"
 )

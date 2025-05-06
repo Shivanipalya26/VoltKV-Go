@@ -10,16 +10,16 @@ import (
 )
 
 const (
-	STRING = '+'
-	ARRAY = '*'
+	STRING  = '+'
+	ARRAY   = '*'
 	INTEGER = ':'
-	BULK = '$'
-	ERROR = '-'
+	BULK    = '$'
+	ERROR   = '-'
 )
 
 var (
 	ErrUnexpectedType = errors.New("unexpected RESP type")
-	ErrInvalidSyntax = errors.New("unexpected RESP syntax")
+	ErrInvalidSyntax  = errors.New("unexpected RESP syntax")
 )
 
 type Resp struct {
@@ -27,16 +27,16 @@ type Resp struct {
 }
 
 func NewResp(r *bufio.Reader) *Resp {
-	return &Resp{r : r}
+	return &Resp{r: r}
 }
 
 type Value struct {
-	Typ string
-	Str string
+	Typ   string
+	Str   string
 	Array []Value
-	Num int 
-	Bulk string
-	Err string
+	Num   int
+	Bulk  string
+	Err   string
 }
 
 func (resp *Resp) ReadValue() (Value, error) {
@@ -48,24 +48,24 @@ func (resp *Resp) ReadValue() (Value, error) {
 	log.Printf("Data type byte: %c", dataType)
 
 	switch dataType {
-	case ARRAY: 
+	case ARRAY:
 		return resp.readArray()
 
-	case BULK: 
+	case BULK:
 		return resp.readBulk()
 
-	case STRING: 
+	case STRING:
 		return resp.readString()
 
 	case INTEGER:
 		return resp.readNum()
-	
-	case ERROR: 
+
+	case ERROR:
 		return resp.readError()
-	
+
 	default:
 		return Value{}, ErrUnexpectedType
-	}	
+	}
 }
 
 func (resp *Resp) readLine() ([]byte, int, error) {
@@ -91,7 +91,7 @@ func (resp *Resp) readInt() (int, int, error) {
 	if err != nil {
 		return 0, 0, err
 	}
-	
+
 	num, err := strconv.ParseInt(string(str), 10, 64)
 	if err != nil {
 		return 0, n, fmt.Errorf("%w: %v", ErrInvalidSyntax, err)
@@ -119,8 +119,8 @@ func (resp *Resp) readArray() (Value, error) {
 		if err != nil {
 			// log.Printf("Failed reading element %d: %v", i, err)
 			return v, err
-		} 
-		// log.Printf("Array element %d: %+v", i, val) 
+		}
+		// log.Printf("Array element %d: %+v", i, val)
 		v.Array[i] = val
 	}
 	return v, nil
@@ -143,8 +143,8 @@ func (resp *Resp) readBulk() (Value, error) {
 	crlf := make([]byte, 2)
 	if _, err := io.ReadFull(resp.r, crlf); err != nil {
 		if err == io.EOF {
-        return v, fmt.Errorf("unexpected RESP syntax: expected CRLF, got EOF")
-    }
+			return v, fmt.Errorf("unexpected RESP syntax: expected CRLF, got EOF")
+		}
 		return v, fmt.Errorf("%w: failed to read CRLF after bulk data: %v", ErrInvalidSyntax, err)
 	}
 	if crlf[0] != '\r' || crlf[1] != '\n' {
